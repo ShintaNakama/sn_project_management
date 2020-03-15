@@ -1,0 +1,23 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: sn_project_management
+  path: .
+  commands:
+    install:
+      status: true
+      method: go build -o sn_project_management
+    run:
+      status: true
+      method: ./sn_project_management
+  watcher:
+    extensions:
+    - go
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor
