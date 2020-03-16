@@ -8,7 +8,7 @@
 $ docker-compose up --build
 ```
 
-- DataBase Migration ... gore
+- DataBase Migration ... sql-migrate
   - ./dbconfig.yml
 ```
 $ sql-migrate status
