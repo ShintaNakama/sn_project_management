@@ -21,7 +21,7 @@ type projectUseCase struct {
 	repository.ProjectRepository
 }
 
-// NewprojectUseCase projectUseCaseを取得します.
+// NewProjectUseCase return projectUseCase
 func NewProjectUseCase(r repository.ProjectRepository) ProjectUseCase {
 	return &projectUseCase{r}
 }
@@ -35,15 +35,18 @@ func (u *projectUseCase) GetProject(ctx context.Context, id int) (*model.Project
 }
 
 func (u *projectUseCase) CreateProject(ctx context.Context, project *model.Project) (*model.Project, error) {
-	return u.ProjectRepository.Create(ctx, project)
+	id, err := u.ProjectRepository.Create(ctx, project)
+  if err != nil {
+		return project, err
+	}
+	return u.ProjectRepository.FetchByID(ctx, id)
 }
 
 func (u *projectUseCase) UpdateProject(ctx context.Context, project *model.Project, id int) (*model.Project, error) {
-	// project, err := u.ProjectRepository.FetchByID(ctx, id)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	return u.ProjectRepository.Update(ctx, project, id)
+	if err := u.ProjectRepository.Update(ctx, project, id); err != nil {
+		return project, err
+	}
+	return u.ProjectRepository.FetchByID(ctx, id)
 }
 
 func (u *projectUseCase) DeleteProject(ctx context.Context, id int) error {

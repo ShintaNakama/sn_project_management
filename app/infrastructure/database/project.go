@@ -64,11 +64,7 @@ func (r *projectRepository) FetchByID(ctx context.Context, id int) (*model.Proje
 	return project, nil
 }
 
-func (r *projectRepository) Create(ctx context.Context, p *model.Project) (*model.Project, error) {
-	//tx, err := conn.Begin()
-	//if err != nil {
-	//	return p, err
-	//}
+func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, error) {
 	result, err := r.Conn.ExecContext(
 		ctx,
 		"insert into projects (name, description, created_at, updated_at) values (?,?,NOW(),NOW())",
@@ -76,35 +72,17 @@ func (r *projectRepository) Create(ctx context.Context, p *model.Project) (*mode
 		p.Description,
 	)
 	if err != nil {
-		return p, err
+		return 0, err
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return p, err
+		return 0, err
 	}
-	project := &model.Project{}
-	if err = r.Conn.QueryRowContext(
-		ctx,
-		"select * from projects where id=?",
-		id,
-	).Scan(
-		&project.ID,
-		&project.Name,
-		&project.Description,
-		&project.CreatedAt,
-		&project.UpdatedAt,
-		&project.Completed,
-	); err != nil {
-		return project, err
-	}
-	//if err = tx.Commit(); err != nil {
-	//	return p, err
-	//}
-	return project, nil
+	return int(id), nil
 }
 
 // Update
-func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int) (*model.Project, error) {
+func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int) error {
 	result, err := r.Conn.ExecContext(
 		ctx,
 		"update projects set name=?, description=?, updated_at=NOW() where id=?",
@@ -113,35 +91,17 @@ func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int
 		id,
 	)
 	if err != nil {
-		return p, err
+		return err
 	}
 	rows, err := result.RowsAffected()
 	if err != nil {
-		return p, err
+		return err
 	}
 	if rows != 1 {
 		err = fmt.Errorf("expected to affect 1 row, affected %d", rows)
-		return p, err
+		return err
 	}
-	project := &model.Project{}
-	if err = r.Conn.QueryRowContext(
-		ctx,
-		"select * from projects where id=?",
-		id,
-	).Scan(
-		&project.ID,
-		&project.Name,
-		&project.Description,
-		&project.CreatedAt,
-		&project.UpdatedAt,
-		&project.Completed,
-	); err != nil {
-		return project, err
-	}
-	//if err = tx.Commit(); err != nil {
-	//	return p, err
-	//}
-	return project, nil
+	return nil
 }
 
 // Delete

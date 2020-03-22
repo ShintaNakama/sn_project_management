@@ -9,7 +9,7 @@ import (
 type ProjectRepository interface {
 	Fetch(ctx context.Context) ([]*model.Project, error)
 	FetchByID(ctx context.Context, id int) (*model.Project, error)
-	Create(ctx context.Context, project *model.Project) (*model.Project, error)
-	Update(ctx context.Context, project *model.Project, id int) (*model.Project, error)
+	Create(ctx context.Context, project *model.Project) (int, error)
+	Update(ctx context.Context, project *model.Project, id int) error
 	Delete(ctx context.Context, id int) error
 }
