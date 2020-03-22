@@ -1,21 +1,30 @@
 package interactor
 
 import (
-	"github.com/ShintaNakama/sn_project_management/app/infrastructure"
+	"database/sql"
+
+	"github.com/ShintaNakama/sn_project_management/app/domain/repository"
+	"github.com/ShintaNakama/sn_project_management/app/domain/service"
+	"github.com/ShintaNakama/sn_project_management/app/infrastructure/database"
 	"github.com/ShintaNakama/sn_project_management/app/presentation/http/controller"
+	"github.com/ShintaNakama/sn_project_management/app/usecase"
 )
 
 type Interactor interface {
+	NewProjectRepository() repository.ProjectRepository
+	NewProjectService() service.ProjectService
+	NewProjectUseCase() usecase.ProjectUseCase
 	NewProjectController() controller.ProjectController
 	NewAppController() controller.AppController
 }
 
 type interactor struct {
-	DB *infrastructure.DB
+	Conn *sql.DB
+	//DB *infrastructure.DB
 }
 
-func NewInteractor(DB *infrastructure.DB) Interactor {
-	return &interactor{DB}
+func NewInteractor(Conn *sql.DB) Interactor {
+	return &interactor{Conn}
 }
 
 type appController struct {
@@ -29,17 +38,17 @@ func (i *interactor) NewAppController() controller.AppController {
 }
 
 func (i *interactor) NewProjectRepository() repository.ProjectRepository {
-	return repository.ProjectRepository(i.DB())
+	return database.NewProjectRepository(i.Conn)
 }
 
 func (i *interactor) NewProjectService() service.ProjectService {
-	return service.ProjectService(i.NewProjectRepository())
+	return service.NewProjectService(i.NewProjectRepository())
 }
 
 func (i *interactor) NewProjectUseCase() usecase.ProjectUseCase {
-	return usecase.ProjectUseCase(i.NewProjectService())
+	return usecase.NewProjectUseCase(i.NewProjectRepository())
 }
 
 func (i *interactor) NewProjectController() controller.ProjectController {
-	return controller.ProjectController(i.NewProjectUseCase())
+	return controller.NewProjectController(i.NewProjectUseCase())
 }

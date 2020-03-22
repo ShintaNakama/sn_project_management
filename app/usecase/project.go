@@ -1,15 +1,20 @@
 package usecase
 
-import "context"
+import (
+	"context"
+
+	"github.com/ShintaNakama/sn_project_management/app/domain/model"
+	"github.com/ShintaNakama/sn_project_management/app/domain/repository"
+)
 
 // Project UseCase interface
 
 type ProjectUseCase interface {
-	List(ctx context.Context) ([]*model.Project, error)
-	Show(ctx context.Context, id int) (*model.Project, error)
-	Create(ctx context.Context, project *model.Project) (*model.Project, error)
-	Update(ctx context.Context, id int) (*model.Project, error)
-	Delete(ctx context.Context, id int) error
+	GetProjects(ctx context.Context) ([]*model.Project, error)
+	GetProject(ctx context.Context, id int) (*model.Project, error)
+	CreateProject(ctx context.Context, project *model.Project) (*model.Project, error)
+	UpdateProject(ctx context.Context, project *model.Project, id int) (*model.Project, error)
+	DeleteProject(ctx context.Context, id int) error
 }
 
 type projectUseCase struct {
@@ -17,7 +22,7 @@ type projectUseCase struct {
 }
 
 // NewprojectUseCase projectUseCaseを取得します.
-func NewProjectUseCase(r repository.ProjectRepository) projectUseCase {
+func NewProjectUseCase(r repository.ProjectRepository) ProjectUseCase {
 	return &projectUseCase{r}
 }
 
@@ -33,12 +38,12 @@ func (u *projectUseCase) CreateProject(ctx context.Context, project *model.Proje
 	return u.ProjectRepository.Create(ctx, project)
 }
 
-func (u *projectUseCase) UpdateProject(ctx context.Context, id int) (*model.Project, error) {
-	project, err := u.ProjectRepository.FetchByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return u.ProjectRepository.Update(ctx, project)
+func (u *projectUseCase) UpdateProject(ctx context.Context, project *model.Project, id int) (*model.Project, error) {
+	// project, err := u.ProjectRepository.FetchByID(ctx, id)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	return u.ProjectRepository.Update(ctx, project, id)
 }
 
 func (u *projectUseCase) DeleteProject(ctx context.Context, id int) error {

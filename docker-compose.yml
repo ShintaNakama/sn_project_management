@@ -5,7 +5,7 @@ services:
     build:
       context: .
     ports:
-      - 8888:8888
+      - 1323:1323
     volumes:
       - .:/work
     working_dir: /work
@@ -20,4 +20,6 @@ services:
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - 63306:3306
+    environment:
+      TZ: Asia/Tokyo
     hostname: db

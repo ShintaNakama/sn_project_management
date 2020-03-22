@@ -19,11 +19,11 @@ type projectService struct {
 }
 
 // NewProjectService ProjectServiceを取得します.
-func NewUserService(r repository.ProjectRepository) ProjectService {
+func NewProjectService(r repository.ProjectRepository) ProjectService {
 	return &projectService{r}
 }
 
-func (u *projectService) DoSomething(ctx context.Context, foo int) error {
+func (p *projectService) DoSomething(ctx context.Context, foo int) error {
 	// some code
 	return nil
 }

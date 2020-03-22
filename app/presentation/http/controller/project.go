@@ -1,74 +1,113 @@
 package controller
 
 import (
-	"encoding/json"
+	"context"
 	"net/http"
+	"strconv"
+
+	"github.com/ShintaNakama/sn_project_management/app/domain/model"
+	"github.com/ShintaNakama/sn_project_management/app/usecase"
+	"github.com/labstack/echo"
 )
 
+// ProjectController is CRUD
 type ProjectController interface {
-  List(w http.ResponseWriter, r *http.Request)
-  Show(w http.ResponseWriter, r *http.Request)
-  Create(w http.ResponseWriter, r *http.Request)
-  Update(w http.ResponseWriter, r *http.Request)
-  Delete(w http.ResponseWriter, r *http.Request)
+	GetProjects(c echo.Context) error
+	GetProject(c echo.Context) error
+	CreateProject(c echo.Context) error
+	UpdateProject(c echo.Context) error
+	DeleteProject(c echo.Context) error
 }
+
 type projectController struct {
-	//Base
-	//mux sync.Mutex
-  // usecase を持ってくる
-  //ProjectUseCase usecase.ProjectUseCase
+	ProjectUseCase usecase.ProjectUseCase
 }
 
-//func NewProjectController(u usecase.ProjectUseCase){
-//  return &projectController{u}
-//}
-
-// List is Get Projects
-func (p *projectController) List(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	list := "project list"
-	if err := json.NewEncoder(w).Encode(list); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+// NewProjectController is return projectController(project handler)
+func NewProjectController(u usecase.ProjectUseCase) ProjectController {
+	return &projectController{u}
 }
 
-// Show is Get Project
-func (p *projectController) Show(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	list := "project show"
-	if err := json.NewEncoder(w).Encode(list); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+// Get Projects is Project List
+func (p *projectController) GetProjects(c echo.Context) error {
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
 	}
+	projects, err := p.ProjectUseCase.GetProjects(ctx)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "Projects does not exist.")
+	}
+	return c.JSON(http.StatusOK, projects)
 }
 
-// Create is Create Project
-func (p *projectController) Create(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	list := "project create"
-	if err := json.NewEncoder(w).Encode(list); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+// Get Project is Project
+func (p *projectController) GetProject(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Project ID must be int")
 	}
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	project, err := p.ProjectUseCase.GetProject(ctx, id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "Project does not exist.")
+	}
+	return c.JSON(http.StatusOK, project)
 }
 
-// Update is Update Project
-func (p *projectController) Update(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	list := "project update"
-	if err := json.NewEncoder(w).Encode(list); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+// Create Project
+func (p *projectController) CreateProject(c echo.Context) error {
+	project := &model.Project{}
+	if err := c.Bind(project); err != nil {
+		return err
 	}
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	project, err := p.ProjectUseCase.CreateProject(ctx, project)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Project can not Create.")
+	}
+	return c.JSON(http.StatusCreated, project)
 }
 
-// Delete is Delete Project
-func (p *projectController) Delete(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	list := "project delete"
-	if err := json.NewEncoder(w).Encode(list); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+// Update Project
+func (p *projectController) UpdateProject(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Project ID must be int")
 	}
+	project := &model.Project{}
+	if err := c.Bind(project); err != nil {
+		return err
+	}
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	project, err = p.ProjectUseCase.UpdateProject(ctx, project, id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Project can not Update.")
+	}
+	return c.JSON(http.StatusOK, project)
+}
+
+// Delete Project
+func (p *projectController) DeleteProject(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Project ID must be int")
+	}
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	if err := p.ProjectUseCase.DeleteProject(ctx, id); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Project can not Delete.")
+	}
+	return c.NoContent(http.StatusNoContent)
 }
