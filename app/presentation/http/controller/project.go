@@ -68,19 +68,21 @@ func (p *projectController) CreateProject(c echo.Context) error {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	project, err := p.ProjectUseCase.CreateProject(ctx, project)
+	//project, err := p.ProjectUseCase.CreateProject(ctx, project)
+	err := p.ProjectUseCase.CreateProject(ctx, project)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Project can not Create.")
+		//return echo.NewHTTPError(http.StatusInternalServerError, "Project can not Create.")
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusCreated, project)
 }
 
 // Update Project
 func (p *projectController) UpdateProject(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Project ID must be int")
-	}
+	//id, err := strconv.Atoi(c.Param("id"))
+	//if err != nil {
+	// return echo.NewHTTPError(http.StatusBadRequest, "Project ID must be int")
+	//}
 	project := &model.Project{}
 	if err := c.Bind(project); err != nil {
 		return err
@@ -89,7 +91,7 @@ func (p *projectController) UpdateProject(c echo.Context) error {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	project, err = p.ProjectUseCase.UpdateProject(ctx, project, id)
+	project, err := p.ProjectUseCase.UpdateProject(ctx, project)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Project can not Update.")
 	}

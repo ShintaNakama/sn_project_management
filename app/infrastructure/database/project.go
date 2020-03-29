@@ -2,99 +2,69 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/ShintaNakama/sn_project_management/app/domain/model"
 	"github.com/ShintaNakama/sn_project_management/app/domain/repository"
+	"github.com/go-gorp/gorp"
 )
 
 // DB database interface
 type projectRepository struct {
-	Conn *sql.DB
+	Conn *gorp.DbMap
 }
 
 // NewProjectRepository is return projectRepository
-func NewProjectRepository(Conn *sql.DB) repository.ProjectRepository {
+func NewProjectRepository(Conn *gorp.DbMap) repository.ProjectRepository {
 	return &projectRepository{Conn}
 }
 
 func (r *projectRepository) Fetch(ctx context.Context) ([]*model.Project, error) {
 	projects := make([]*model.Project, 0)
-	rows, err := r.Conn.QueryContext(ctx, "select id, name, description, created_at, updated_at, completed from projects")
+	_, err := r.Conn.Select(&projects, "select id, name, description, created_at, updated_at, completed from projects")
 	if err != nil {
 		return projects, err
 	}
-	defer func() {
-		if err = rows.Close(); err != nil {
-			log.Println(err)
-		}
-	}()
-
-	for rows.Next() {
-		p := &model.Project{}
-		if err = rows.Scan(&p.ID, &p.Name, &p.Description, &p.CreatedAt, &p.UpdatedAt, &p.Completed); err != nil {
-			return projects, err
-		}
-		projects = append(projects, p)
-	}
-	fmt.Println(projects)
-
 	return projects, nil
 }
 
 func (r *projectRepository) FetchByID(ctx context.Context, id int) (*model.Project, error) {
 	project := &model.Project{}
-	if err := r.Conn.QueryRowContext(
-		ctx,
-		"select * from projects where id=?",
-		id,
-	).Scan(
-		&project.ID,
-		&project.Name,
-		&project.Description,
-		&project.CreatedAt,
-		&project.UpdatedAt,
-		&project.Completed,
-	); err != nil {
+	err := r.Conn.SelectOne(&project, "select * from projects where id=?", id)
+	if err != nil {
 		return project, err
 	}
 
 	return project, nil
 }
 
-func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, error) {
-	result, err := r.Conn.ExecContext(
-		ctx,
-		"insert into projects (name, description, created_at, updated_at) values (?,?,NOW(),NOW())",
-		p.Name,
-		p.Description,
-	)
+// Create
+func (r *projectRepository) Create(ctx context.Context, p *model.Project) error {
+	p.CreatedAt = time.Now()
+	p.UpdatedAt = time.Now()
+	err := r.Conn.Insert(p)
 	if err != nil {
-		return 0, err
+		log.Println(err)
+		return err
 	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-	return int(id), nil
+	return nil
 }
 
 // Update
-func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int) error {
-	result, err := r.Conn.ExecContext(
-		ctx,
-		"update projects set name=?, description=?, updated_at=NOW() where id=?",
-		p.Name,
-		p.Description,
-		id,
-	)
+func (r *projectRepository) Update(ctx context.Context, p *model.Project) error {
+	project := &model.Project{}
+	err := r.Conn.SelectOne(&project, "select * from projects where id=?", p.ID)
 	if err != nil {
 		return err
 	}
-	rows, err := result.RowsAffected()
+  project.Name = p.Name
+  project.Description = p.Description
+	project.UpdatedAt = time.Now()
+	rows, err := r.Conn.Update(project)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 	if rows != 1 {
@@ -106,8 +76,7 @@ func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int
 
 // Delete
 func (r *projectRepository) Delete(ctx context.Context, id int) error {
-	result, err := r.Conn.ExecContext(
-		ctx,
+	result, err := r.Conn.Exec(
 		"delete from projects where id=?",
 		id,
 	)

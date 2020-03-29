@@ -1,13 +1,12 @@
 package interactor
 
 import (
-	"database/sql"
-
 	"github.com/ShintaNakama/sn_project_management/app/domain/repository"
 	"github.com/ShintaNakama/sn_project_management/app/domain/service"
 	"github.com/ShintaNakama/sn_project_management/app/infrastructure/database"
 	"github.com/ShintaNakama/sn_project_management/app/presentation/http/controller"
 	"github.com/ShintaNakama/sn_project_management/app/usecase"
+	"github.com/go-gorp/gorp"
 )
 
 type Interactor interface {
@@ -19,11 +18,15 @@ type Interactor interface {
 }
 
 type interactor struct {
-	Conn *sql.DB
+	// database/sql
+	//Conn *sql.DB
+	// gorp
+	Conn *gorp.DbMap
 	//DB *infrastructure.DB
 }
 
-func NewInteractor(Conn *sql.DB) Interactor {
+//func NewInteractor(Conn *sql.DB) Interactor {
+func NewInteractor(Conn *gorp.DbMap) Interactor {
 	return &interactor{Conn}
 }
 
