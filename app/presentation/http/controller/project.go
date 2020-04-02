@@ -68,8 +68,8 @@ func (p *projectController) CreateProject(c echo.Context) error {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	//project, err := p.ProjectUseCase.CreateProject(ctx, project)
-	err := p.ProjectUseCase.CreateProject(ctx, project)
+	project, err := p.ProjectUseCase.CreateProject(ctx, project)
+	//err := p.ProjectUseCase.CreateProject(ctx, project)
 	if err != nil {
 		//return echo.NewHTTPError(http.StatusInternalServerError, "Project can not Create.")
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
