@@ -32,8 +32,8 @@ func (u *mockProjectUseCase) CreateProject(ctx context.Context, project *model.P
 }
 
 func (u *mockProjectUseCase) UpdateProject(ctx context.Context, project *model.Project) (*model.Project, error) {
-  mp := getMockProject(project.ID)
-  mp.Name = mp.Name + "_updated"
+	mp := getMockProject(project.ID)
+	mp.Name = mp.Name + "_updated"
 	return mp, nil
 }
 
@@ -177,7 +177,7 @@ func TestCreateProject(t *testing.T) {
 
 // Update Project
 type updateProjectTest struct {
-	ID       int
+	ID          int
 	ProjectName string
 }
 
@@ -196,12 +196,12 @@ func TestUpdateproject(t *testing.T) {
 	for _, test := range updateProjectTests {
 		// set request
 		e := echo.New()
-    jsonBytes, err := json.Marshal(test)
-    if err != nil {
-      t.Fatal(err)
-    }
+		jsonBytes, err := json.Marshal(test)
+		if err != nil {
+			t.Fatal(err)
+		}
 		req := httptest.NewRequest(echo.PUT, "/projects", strings.NewReader(string(jsonBytes)))
-	  req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 		c.SetPath("/projects/:id")
