@@ -73,7 +73,7 @@ func getMockProjectNoID() *model.Project {
 }
 
 // GetProjects
-func TestGetProjects(t *testing.T) {
+func TestControllerGetProjects(t *testing.T) {
 	// expected
 	expected := getMockProjects(5)
 
@@ -115,7 +115,7 @@ var getProjectTests = []getProjectTest{
 }
 
 // GetProject
-func TestGetProject(t *testing.T) {
+func TestControllerGetProject(t *testing.T) {
 	// set stub
 	usecase := &mockProjectUseCase{}
 	controller := NewProjectController(usecase)
@@ -143,7 +143,7 @@ func TestGetProject(t *testing.T) {
 }
 
 // Create Project
-func TestCreateProject(t *testing.T) {
+func TestControllerCreateProject(t *testing.T) {
 	// expected
 	expected := getMockProject(1)
 
@@ -188,7 +188,7 @@ var updateProjectTests = []updateProjectTest{
 	{math.MaxInt64, fmt.Sprintf("test_project_name_%d_updated", math.MaxInt64)},
 }
 
-func TestUpdateproject(t *testing.T) {
+func TestControllerUpdateproject(t *testing.T) {
 	// set stub
 	usecase := &mockProjectUseCase{}
 	ctl := NewProjectController(usecase)
@@ -223,7 +223,7 @@ func TestUpdateproject(t *testing.T) {
 }
 
 // Delete Project
-func TestProjectHandler_DeleteProject(t *testing.T) {
+func TestControllerDeleteProject(t *testing.T) {
 	// set stub
 	usecase := &mockProjectUseCase{}
 	h := NewProjectController(usecase)
