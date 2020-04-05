@@ -31,8 +31,8 @@ func (u *mockProjectUseCase) CreateProject(ctx context.Context, project *model.P
 	return getMockProject(1), nil
 }
 
-func (u *mockProjectUseCase) UpdateProject(ctx context.Context, project *model.Project) (*model.Project, error) {
-	mp := getMockProject(project.ID)
+func (u *mockProjectUseCase) UpdateProject(ctx context.Context, project *model.Project, id int) (*model.Project, error) {
+	mp := getMockProject(id)
 	mp.Name = mp.Name + "_updated"
 	return mp, nil
 }

@@ -88,6 +88,9 @@ func (p *taskController) CreateTask(c echo.Context) error {
 // Update Task
 func (p *taskController) UpdateTask(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
+  if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Task ID must be int")
+  }
 	task := &model.Task{}
 	if err := c.Bind(task); err != nil {
 		return err
