@@ -12,50 +12,51 @@ import (
 )
 
 // DB database interface
-type projectRepository struct {
+type taskRepository struct {
 	Conn *gorp.DbMap
 }
 
-// NewProjectRepository is return projectRepository
-func NewProjectRepository(Conn *gorp.DbMap) repository.ProjectRepository {
-	return &projectRepository{Conn}
+// NewTaskRepository is return taskRepository
+func NewTaskRepository(Conn *gorp.DbMap) repository.TaskRepository {
+	return &taskRepository{Conn}
 }
 
-func (r *projectRepository) Fetch(ctx context.Context) ([]*model.Project, error) {
-	projects := make([]*model.Project, 0)
-	_, err := r.Conn.Select(&projects, "select id, name, description, created_at, updated_at, completed from projects")
+func (r *taskRepository) Fetch(ctx context.Context, pID int) ([]*model.Task, error) {
+	tasks := make([]*model.Task, 0)
+	_, err := r.Conn.Select(&tasks, "select id, project_id, description, created_at, updated_at, completed from tasks where project_id=?", pID)
 	if err != nil {
-		return projects, err
+		return tasks, err
 	}
-	return projects, nil
+	return tasks, nil
 }
 
-func (r *projectRepository) FetchByID(ctx context.Context, id int) (*model.Project, error) {
-	project := &model.Project{}
-	err := r.Conn.SelectOne(&project, "select * from projects where id=?", id)
+func (r *taskRepository) FetchByID(ctx context.Context, id int) (*model.Task, error) {
+	task := &model.Task{}
+	err := r.Conn.SelectOne(&task, "select * from tasks where id=?", id)
 	if err != nil {
-		return project, err
+		return task, err
 	}
 
-	return project, nil
+	return task, nil
 }
 
 // Create
-func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, error) {
+func (r *taskRepository) Create(ctx context.Context, t *model.Task, pID int) (int, error) {
   // Start a new transaction
   trans, err := r.Conn.Begin()
   if err != nil {
       return 0,err
   }
-	p.CreatedAt = time.Now()
-	p.UpdatedAt = time.Now()
-	err = trans.Insert(p)
+  t.ProjectID = pID
+	t.CreatedAt = time.Now()
+	t.UpdatedAt = time.Now()
+	err = trans.Insert(t)
 	if err != nil {
 		log.Println(err)
 		return 0, err
 	}
 	var id int
-	err = r.Conn.SelectOne(&id, "select id from projects order by id desc limit 1")
+	err = trans.SelectOne(&id, "select id from tasks order by id desc limit 1")
 	if err != nil {
 		log.Println(err)
 		return 0, err
@@ -69,21 +70,20 @@ func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, 
 }
 
 // Update
-func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int) error {
+func (r *taskRepository) Update(ctx context.Context, t *model.Task, id int) error {
   // Start a new transaction
   trans, err := r.Conn.Begin()
   if err != nil {
       return err
   }
-	project := &model.Project{}
-	err = trans.SelectOne(&project, "select * from projects where id=?", id)
+	task := &model.Task{}
+	err = trans.SelectOne(&task, "select * from tasks where id=?", id)
 	if err != nil {
 		return err
 	}
-	project.Name = p.Name
-	project.Description = p.Description
-	project.UpdatedAt = time.Now()
-	rows, err := trans.Update(project)
+	task.Description = t.Description
+	task.UpdatedAt = time.Now()
+	rows, err := trans.Update(task)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -101,9 +101,9 @@ func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int
 }
 
 // Delete
-func (r *projectRepository) Delete(ctx context.Context, id int) error {
+func (r *taskRepository) Delete(ctx context.Context, id int) error {
 	result, err := r.Conn.Exec(
-		"delete from projects where id=?",
+		"delete from tasks where id=?",
 		id,
 	)
 	if err != nil {

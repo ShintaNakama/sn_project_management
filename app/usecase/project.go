@@ -12,8 +12,8 @@ import (
 type ProjectUseCase interface {
 	GetProjects(ctx context.Context) ([]*model.Project, error)
 	GetProject(ctx context.Context, id int) (*model.Project, error)
-	CreateProject(ctx context.Context, project *model.Project) error
-	UpdateProject(ctx context.Context, project *model.Project) (*model.Project, error)
+	CreateProject(ctx context.Context, project *model.Project) (*model.Project, error)
+	UpdateProject(ctx context.Context, project *model.Project, id int) (*model.Project, error)
 	DeleteProject(ctx context.Context, id int) error
 }
 
@@ -34,19 +34,19 @@ func (u *projectUseCase) GetProject(ctx context.Context, id int) (*model.Project
 	return u.ProjectRepository.FetchByID(ctx, id)
 }
 
-func (u *projectUseCase) CreateProject(ctx context.Context, project *model.Project) error {
-	err := u.ProjectRepository.Create(ctx, project)
-  if err != nil {
-		return err
+func (u *projectUseCase) CreateProject(ctx context.Context, project *model.Project) (*model.Project, error) {
+	id, err := u.ProjectRepository.Create(ctx, project)
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	return u.ProjectRepository.FetchByID(ctx, id)
 }
 
-func (u *projectUseCase) UpdateProject(ctx context.Context, project *model.Project) (*model.Project, error) {
-	if err := u.ProjectRepository.Update(ctx, project); err != nil {
+func (u *projectUseCase) UpdateProject(ctx context.Context, project *model.Project, id int) (*model.Project, error) {
+	if err := u.ProjectRepository.Update(ctx, project, id); err != nil {
 		return project, err
 	}
-  return project, nil
+	return u.ProjectRepository.FetchByID(ctx, id)
 }
 
 func (u *projectUseCase) DeleteProject(ctx context.Context, id int) error {

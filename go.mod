@@ -9,5 +9,6 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.1.15 // indirect
+	github.com/stretchr/testify v1.4.0
 	gopkg.in/gorp.v1 v1.7.2
 )

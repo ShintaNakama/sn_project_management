@@ -14,6 +14,10 @@ type Interactor interface {
 	NewProjectService() service.ProjectService
 	NewProjectUseCase() usecase.ProjectUseCase
 	NewProjectController() controller.ProjectController
+	NewTaskRepository() repository.TaskRepository
+	NewTaskService() service.TaskService
+	NewTaskUseCase() usecase.TaskUseCase
+	NewTaskController() controller.TaskController
 	NewAppController() controller.AppController
 }
 
@@ -32,11 +36,13 @@ func NewInteractor(Conn *gorp.DbMap) Interactor {
 
 type appController struct {
 	controller.ProjectController
+	controller.TaskController
 }
 
 func (i *interactor) NewAppController() controller.AppController {
 	appController := &appController{}
 	appController.ProjectController = i.NewProjectController()
+	appController.TaskController = i.NewTaskController()
 	return appController
 }
 
@@ -54,4 +60,20 @@ func (i *interactor) NewProjectUseCase() usecase.ProjectUseCase {
 
 func (i *interactor) NewProjectController() controller.ProjectController {
 	return controller.NewProjectController(i.NewProjectUseCase())
+}
+
+func (i *interactor) NewTaskRepository() repository.TaskRepository {
+	return database.NewTaskRepository(i.Conn)
+}
+
+func (i *interactor) NewTaskService() service.TaskService {
+	return service.NewTaskService(i.NewTaskRepository())
+}
+
+func (i *interactor) NewTaskUseCase() usecase.TaskUseCase {
+	return usecase.NewTaskUseCase(i.NewTaskRepository())
+}
+
+func (i *interactor) NewTaskController() controller.TaskController {
+	return controller.NewTaskController(i.NewTaskUseCase())
 }
