@@ -25,7 +25,7 @@ jobs:
 
   setup-release:
     name: Setup release
-    needs: controller_test # controllr_test jobs
+    needs: controller_test # controllr_test jobs !
     runs-on: ubuntu-lates
     steps:
     - name: Create release
