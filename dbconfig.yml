@@ -4,3 +4,7 @@ development:
   # parseTimeが無いとdatetime型がある場合エラーになるよう
   #datasource: {user}:{password}@tcp({host:port})/database_name?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
   datasource: root@tcp(127.0.0.1:63306)/sn_project_management?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
+production:
+  dialect: mysql
+  dir: db/migrations
+  datasource: host=${DB_HOST} dbname=sn_project_management?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true user=${DB_USER} password=${DB_PASSWORD}
