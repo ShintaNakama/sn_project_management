@@ -1,12 +1,12 @@
 // Configure the Google Cloud provider
 provider "google" {
- credentials = file("/Users/nakamashinta/.gcp/sn-project-management-v1-f746a8a5aa3a.json")
- project     = "sn-project-management-v1"
- region      = "us-west1"
+ credentials = file("/Users/nakamashinta/.gcp/sn-project-management-v2-30a6bbc88daa.json")
+ project     = "sn-project-management-v2"
+ region      = "asia-northeast1"
 }
 provider "google-beta" {
- credentials = file("/Users/nakamashinta/.gcp/sn-project-management-v1-f746a8a5aa3a.json")
- project     = "sn-project-management-v1"
- region = "us-central1"
- zone   = "us-central1-a"
+ credentials = file("/Users/nakamashinta/.gcp/sn-project-management-v2-30a6bbc88daa.json")
+ project     = "sn-project-management-v2"
+ region      = "asia-northeast1"
+ zone        = "asia-northeast1-a"
 }

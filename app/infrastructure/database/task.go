@@ -42,30 +42,20 @@ func (r *taskRepository) FetchByID(ctx context.Context, id int) (*model.Task, er
 
 // Create
 func (r *taskRepository) Create(ctx context.Context, t *model.Task, pID int) (int, error) {
-  // Start a new transaction
-  trans, err := r.Conn.Begin()
-  if err != nil {
-      return 0,err
-  }
   t.ProjectID = pID
 	t.CreatedAt = time.Now()
 	t.UpdatedAt = time.Now()
-	err = trans.Insert(t)
+  err := r.Conn.Insert(t)
 	if err != nil {
 		log.Println(err)
 		return 0, err
 	}
 	var id int
-	err = trans.SelectOne(&id, "select id from tasks order by id desc limit 1")
+	err = r.Conn.SelectOne(&id, "select id from tasks order by id desc limit 1")
 	if err != nil {
 		log.Println(err)
 		return 0, err
 	}
-  // if the commit is successful, a nil error is returned
-  if err = trans.Commit(); err != nil {
-		log.Println(err)
-		return 0, err
-  }
 	return id, nil
 }
 

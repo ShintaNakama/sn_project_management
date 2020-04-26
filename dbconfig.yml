@@ -7,4 +7,4 @@ development:
 production:
   dialect: mysql
   dir: db/migrations
-  datasource: host=${DB_HOST} dbname=sn_project_management?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true user=${DB_USER} password=${DB_PASSWORD}
+  datasource: ${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:${DB_PORT})/sn_project_management?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true

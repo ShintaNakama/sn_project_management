@@ -5,7 +5,7 @@ services:
     build:
       context: .
     ports:
-      - 1323:1323
+      - 8080:8080
     volumes:
       - .:/work
     working_dir: /work

@@ -1,6 +1,6 @@
-resource "google_compute_firewall" "sn-project-management-v1-firewall" {
-  name    = "sn-project-management-v1"
-  network       = google_compute_network.sn-project-management-v1-network.self_link
+resource "google_compute_firewall" "firewall" {
+  name    = "sn-project-management-v2"
+  network       = google_compute_network.network.self_link
   
   allow {
     protocol = "icmp"

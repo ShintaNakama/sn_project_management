@@ -23,7 +23,7 @@ func main() {
 
 	router.NewRouter(e, c)
 	middleware.NewMiddleware(e)
-	if err := e.Start(":1323"); err != nil {
+	if err := e.Start(":8080"); err != nil {
 		e.Logger.Fatal(fmt.Sprintf("Failed to start: %v", err))
 	}
 }

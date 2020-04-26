@@ -36,7 +36,7 @@ func (p *projectController) GetProjects(c echo.Context) error {
 	}
 	projects, err := p.ProjectUseCase.GetProjects(ctx)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "Projects does not exist.")
+		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 	return c.JSON(http.StatusOK, projects)
 }

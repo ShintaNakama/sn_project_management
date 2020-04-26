@@ -1,2 +1,2 @@
-gcp_region      = "us-central1"
-gcp_region_zone = "us-central1-a"
+gcp_region      = "asia-northeast1"
+gcp_region_zone = "asia-northeast1-a"

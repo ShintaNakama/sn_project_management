@@ -42,14 +42,9 @@ func (r *projectRepository) FetchByID(ctx context.Context, id int) (*model.Proje
 
 // Create
 func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, error) {
-  // Start a new transaction
-  trans, err := r.Conn.Begin()
-  if err != nil {
-      return 0,err
-  }
 	p.CreatedAt = time.Now()
 	p.UpdatedAt = time.Now()
-	err = trans.Insert(p)
+  err := r.Conn.Insert(p)
 	if err != nil {
 		log.Println(err)
 		return 0, err
@@ -60,11 +55,6 @@ func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, 
 		log.Println(err)
 		return 0, err
 	}
-  // if the commit is successful, a nil error is returned
-  if err = trans.Commit(); err != nil {
-		log.Println(err)
-		return 0, err
-  }
 	return id, nil
 }
 
