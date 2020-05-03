@@ -3,6 +3,13 @@ ENV LANG C.UTF-8
 ENV TZ Asia/Tokyo
 
 RUN go get github.com/derekparker/delve/cmd/dlv
-RUN go get github.com/oxequa/realize
-ENTRYPOINT ["realize"]
-CMD ["start"]
+
+#RUN go get github.com/oxequa/realize
+#ENTRYPOINT ["realize"]
+#CMD ["start"]
+
+# ホットリロードをrealizeからairに変更
+#RUN go get github.com/oxequa/realize
+#ENTRYPOINT ["realize"]
+#CMD ["start"]
+RUN go get -u github.com/cosmtrek/air

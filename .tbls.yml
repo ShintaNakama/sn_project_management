@@ -1,0 +1,7 @@
+# .tbls.yml
+
+# 接続先として、データベースの種類(`mysql`)、ユーザ名(`dbuser`)、パスワード(`dbpass`)、ホスト名(`localhost`)、ポート(`3306`)、データベース名(`dbname`)を以下のように記載します
+dsn: mysql://root@localhost:63306/sn_project_management
+
+# ドキュメントのディレクトリを指定します
+docPath: db/schema

@@ -5,13 +5,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch",
+      "name": "docker-debug",
       "type": "go",
-      "request": "launch",
-      "mode": "auto",
-      "program": "${fileDirname}",
-      "env": {},
-      "args": []
+      "request": "attach",
+      "mode": "remote",
+      "remotePath": "/work",
+      "port": 2345,
+      "host": "127.0.0.1",
+      // "program": "${workspaceFolder}"
+      // "program": "${workspaceRoot}",
+      // "env": {},
+      // "args": []
     }
   ]
 }

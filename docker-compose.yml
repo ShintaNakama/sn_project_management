@@ -7,13 +7,17 @@ services:
       dockerfile: dev-Dockerfile
     cap_add:
       - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
     ports:
       - 8080:8080
+      - 2345:2345
     volumes:
       - .:/work
     working_dir: /work
     depends_on:
       - db
+    command: air
 
   db:
     image: mysql:5.7
