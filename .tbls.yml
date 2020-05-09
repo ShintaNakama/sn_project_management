@@ -5,3 +5,10 @@ dsn: mysql://root@localhost:63306/sn_project_management
 
 # ドキュメントのディレクトリを指定します
 docPath: db/schema
+comments:
+  -
+    table: projects
+    comment: プロジェクトテーブル
+    columnComments:
+      name: プロジェクト名
+      description: プロジェクトの内容

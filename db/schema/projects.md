@@ -24,8 +24,8 @@ CREATE TABLE `projects` (
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | int(10) unsigned |  | false | [completed_projects](completed_projects.md) [completed_tasks](completed_tasks.md) [tasks](tasks.md) |  |  |
-| name | varchar(128) |  | false |  |  |  |
-| description | text |  | true |  |  |  |
+| name | varchar(128) |  | false |  |  | プロジェクト名 |
+| description | text |  | true |  |  | プロジェクトの内容 |
 | created_at | datetime |  | false |  |  |  |
 | updated_at | datetime |  | false |  |  |  |
 | completed | tinyint(4) | 0 | false |  |  |  |
