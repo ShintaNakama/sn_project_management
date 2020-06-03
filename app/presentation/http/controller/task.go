@@ -63,16 +63,16 @@ func (p *taskController) GetTask(c echo.Context) error {
 // Create Task
 func (p *taskController) CreateTask(c echo.Context) error {
 	pID, err := strconv.Atoi(c.Param("project_id"))
-  //pID, err := strconv.Atoi(c.FormValue("project_id"))
-  if err != nil {
+	//pID, err := strconv.Atoi(c.FormValue("project_id"))
+	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Project ID must be int")
-  }
+	}
 
 	task := &model.Task{}
 	if err := c.Bind(task); err != nil {
 		return err
 	}
-  log.Println(task)
+	log.Println(task)
 	ctx := c.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
@@ -88,9 +88,9 @@ func (p *taskController) CreateTask(c echo.Context) error {
 // Update Task
 func (p *taskController) UpdateTask(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
-  if err != nil {
+	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Task ID must be int")
-  }
+	}
 	task := &model.Task{}
 	if err := c.Bind(task); err != nil {
 		return err

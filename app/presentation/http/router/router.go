@@ -6,13 +6,13 @@ import (
 )
 
 func NewRouter(e *echo.Echo, c controller.AppController) {
-  // project
+	// project
 	e.POST("/projects", c.CreateProject)
 	e.GET("/projects", c.GetProjects)
 	e.GET("/projects/:id", c.GetProject)
 	e.PUT("/projects/:id", c.UpdateProject)
 	e.DELETE("/projects/:id", c.DeleteProject)
-  // task
+	// task
 	e.POST("/projects/:project_id/tasks", c.CreateTask)
 	e.GET("/projects/:project_id/tasks", c.GetTasks)
 	e.GET("/projects/:project_id/tasks/:id", c.GetTask)

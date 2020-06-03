@@ -44,7 +44,7 @@ func (r *projectRepository) FetchByID(ctx context.Context, id int) (*model.Proje
 func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, error) {
 	p.CreatedAt = time.Now()
 	p.UpdatedAt = time.Now()
-  err := r.Conn.Insert(p)
+	err := r.Conn.Insert(p)
 	if err != nil {
 		log.Println(err)
 		return 0, err
@@ -60,11 +60,11 @@ func (r *projectRepository) Create(ctx context.Context, p *model.Project) (int, 
 
 // Update
 func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int) error {
-  // Start a new transaction
-  trans, err := r.Conn.Begin()
-  if err != nil {
-      return err
-  }
+	// Start a new transaction
+	trans, err := r.Conn.Begin()
+	if err != nil {
+		return err
+	}
 	project := &model.Project{}
 	err = trans.SelectOne(&project, "select * from projects where id=?", id)
 	if err != nil {
@@ -82,11 +82,11 @@ func (r *projectRepository) Update(ctx context.Context, p *model.Project, id int
 		err = fmt.Errorf("expected to affect 1 row, affected %d", rows)
 		return err
 	}
-  // if the commit is successful, a nil error is returned
-  if err = trans.Commit(); err != nil {
+	// if the commit is successful, a nil error is returned
+	if err = trans.Commit(); err != nil {
 		log.Println(err)
 		return err
-  }
+	}
 	return nil
 }
 

@@ -196,14 +196,14 @@ func TestControllerCreateTask(t *testing.T) {
 
 // Update Task
 type updateTaskTest struct {
-	ID          int
-	ProjectID          int
+	ID              int
+	ProjectID       int
 	TaskDescription string
 }
 
 var updateTaskTests = []updateTaskTest{
-	{math.MaxInt8, 1,fmt.Sprintf("test_task_description_%d_updated", math.MaxInt8)},
-	{math.MaxInt16, 1,fmt.Sprintf("test_task_description_%d_updated", math.MaxInt16)},
+	{math.MaxInt8, 1, fmt.Sprintf("test_task_description_%d_updated", math.MaxInt8)},
+	{math.MaxInt16, 1, fmt.Sprintf("test_task_description_%d_updated", math.MaxInt16)},
 }
 
 func TestControllerUpdateTask(t *testing.T) {
@@ -254,9 +254,9 @@ func TestControllerDeleteTask(t *testing.T) {
 	req := httptest.NewRequest(echo.DELETE, "/projects/tasks", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-  c.SetPath("/projects/:project_id")
-  c.SetParamNames("project_id")
-  c.SetParamValues(fmt.Sprint(1))
+	c.SetPath("/projects/:project_id")
+	c.SetParamNames("project_id")
+	c.SetParamValues(fmt.Sprint(1))
 	c.SetPath("/tasks/:id")
 	c.SetParamNames("id")
 	c.SetParamValues(fmt.Sprint(1))

@@ -42,10 +42,10 @@ func (r *taskRepository) FetchByID(ctx context.Context, id int) (*model.Task, er
 
 // Create
 func (r *taskRepository) Create(ctx context.Context, t *model.Task, pID int) (int, error) {
-  t.ProjectID = pID
+	t.ProjectID = pID
 	t.CreatedAt = time.Now()
 	t.UpdatedAt = time.Now()
-  err := r.Conn.Insert(t)
+	err := r.Conn.Insert(t)
 	if err != nil {
 		log.Println(err)
 		return 0, err
@@ -61,11 +61,11 @@ func (r *taskRepository) Create(ctx context.Context, t *model.Task, pID int) (in
 
 // Update
 func (r *taskRepository) Update(ctx context.Context, t *model.Task, id int) error {
-  // Start a new transaction
-  trans, err := r.Conn.Begin()
-  if err != nil {
-      return err
-  }
+	// Start a new transaction
+	trans, err := r.Conn.Begin()
+	if err != nil {
+		return err
+	}
 	task := &model.Task{}
 	err = trans.SelectOne(&task, "select * from tasks where id=?", id)
 	if err != nil {
@@ -82,11 +82,11 @@ func (r *taskRepository) Update(ctx context.Context, t *model.Task, id int) erro
 		err = fmt.Errorf("expected to affect 1 row, affected %d", rows)
 		return err
 	}
-  // if the commit is successful, a nil error is returned
-  if err = trans.Commit(); err != nil {
+	// if the commit is successful, a nil error is returned
+	if err = trans.Commit(); err != nil {
 		log.Println(err)
 		return err
-  }
+	}
 	return nil
 }
 
